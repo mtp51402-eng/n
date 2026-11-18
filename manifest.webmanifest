@@ -1,0 +1,17 @@
+{
+  "name": "CV – അറബി പഠന ഗെയിം",
+  "short_name": "CV അറബി",
+  "description": "അറബി അക്ഷരങ്ങളും ഹറക്കത്തും വാക്കുകളും കളിയിലൂടെ പഠിക്കാം",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07181c",
+  "theme_color": "#07181c",
+  "lang": "ml",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
