@@ -1,5 +1,5 @@
 // Offline cache. Bump CACHE when index.html changes so phones refresh.
-var CACHE = 'cv-game-v3';
+var CACHE = 'cv-game-v4';
 var CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));

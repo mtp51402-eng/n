@@ -156,7 +156,7 @@ input:focus{outline:0;border-color:var(--gold)}
  DB_URL: എല്ലാ ഫോണുകളിലും ഒരേ ലീഡർബോർഡ് കാണാൻ ഒരു Firebase Realtime Database URL നൽകുക
  (ഉദാ: "https://your-project-default-rtdb.firebaseio.com"; rules ൽ read/write ഓൺ ആക്കണം).
  ഒഴിച്ചിട്ടാൽ ലീഡർബോർഡ് ഈ ഫോണിൽ മാത്രം (localStorage) സേവ് ആകും. */
-const CFG={DB_URL:"",MASTER_H:559811118399194};
+const CFG={DB_URL:"https://cv-game-fa1cb-default-rtdb.asia-southeast1.firebasedatabase.app",MASTER_H:559811118399194};
 function h53(s,seed=0){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0;i<s.length;i++){const ch=s.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0)}
 const normCode=c=>String(c||'').trim().replace(/\s+/g,' ').toUpperCase();
 const ck=c=>'k'+h53(normCode(c)).toString(36);
