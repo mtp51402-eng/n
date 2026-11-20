@@ -1,5 +1,5 @@
 // Offline cache. Bump CACHE when index.html changes so phones refresh.
-var CACHE = 'cv-game-v5';
+var CACHE = 'cv-game-v9';
 var CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));
@@ -16,7 +16,7 @@ self.addEventListener('fetch', function (e) {
     var net = fetch(e.request).then(function (r) {
       if (r && (r.ok || r.type === 'opaque')) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copy); }); }
       return r;
-    }).catch(function () { return hit; });
+    }).catch(function () { return hit || caches.match('./index.html'); });
     return hit || net;
   }));
 });

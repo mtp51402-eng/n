@@ -110,7 +110,7 @@ input:focus{outline:0;border-color:var(--gold)}
 @keyframes mpop{from{transform:scale(.2) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
-<body>
+<body><div id="netb" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99;background:#b8820a;color:#fff;text-align:center;font-size:12px;padding:3px">📴 ഓഫ്‌ലൈൻ: സ്കോർ ഫോണിൽ സൂക്ഷിക്കും, നെറ്റ് വന്നാൽ ലീഡർബോർഡിൽ ചേരും</div>
 
 <section id="home" class="screen on">
   <div class="hero"><div><div class="logo">CV</div><div class="sub ar">تَعَلَّمِ الْعَرَبِيَّة</div></div><button class="ico" id="trophyBtn" title="Leaderboard">🏆</button></div>
@@ -143,6 +143,8 @@ input:focus{outline:0;border-color:var(--gold)}
   <div class="card">
     <label>സർട്ടിഫിക്കറ്റിലെ പേര്</label>
     <input id="certName" type="text" placeholder="നിങ്ങളുടെ പേര്" autocomplete="off">
+    <label>സർട്ടിഫിക്കറ്റ് ശൈലി</label>
+    <div style="display:flex;gap:8px;margin-bottom:8px"><button class="btn sm" id="stM" type="button">✨ മോഡേൺ</button><button class="btn sm ghost" id="stC" type="button">📜 ക്ലാസിക്</button></div>
     <label class="chk" id="hideWrap"><input type="checkbox" id="hideRank"> Hide Rank (റാങ്ക് മറയ്ക്കുക)</label>
   </div>
   <canvas id="cert"></canvas>
@@ -219,7 +221,7 @@ function wordOpts(w,n=4){
 const LV=[null,
  {t:'അക്ഷരമാല',min:10},{t:'ഹറക്കത്ത് തിരിച്ചറിയൽ',min:6},{t:'ഹറക്കത്ത് വായന',min:8},{t:'മദ്ദ് അക്ഷരം',min:20},
  {t:'രണ്ടക്ഷര വാക്കുകൾ',min:8},{t:'ശദ്ദ് സ്ഥാനം',min:6},{t:'ശദ്ദ് അക്ഷരം',min:6},{t:'മദ്ദ് ഗ്യാപ്പ്',min:6},
- {t:'കൂട്ടിയെഴുത്ത്',min:4},{t:'വേർതിരിച്ചെഴുത്ത്',min:4},{t:'സമ്പൂർണ്ണ വാക്കുകൾ',min:8}];
+ {t:'കൂട്ടിയെഴുത്ത്',min:4},{t:'വേർതിരിച്ചെഴുത്ത്',min:4},{t:'സമ്പൂർണ്ണ വാക്കുകൾ',min:8},{t:'മലയാളം → അറബി എഴുത്ത്',min:6}];
 const STREAK=4,QN=20; // ഓരോ ലെവലിലും 20 ചോദ്യം; അതിനിടയിൽ എവിടെയെങ്കിലും തുടർച്ചയായ 4 ശരി
 
 const GEN={};
@@ -261,6 +263,10 @@ GEN[10]=()=>{const [s,m]=M8S[rnd(M8S.length)],p=parseM(s),cl=p.it.map(x=>x.repla
   const jn=i=>i<cl.length-1&&!NOJ.includes(cl[i][0]);
   const ctx=cl.map((x,i)=>(i>0&&jn(i-1)?'‍':'')+x+(jn(i)?'‍':''));
   return{key:'10'+s,prompt:`<div class="ml">ഈ വാക്കിലെ അക്ഷരങ്ങൾ ഓരോന്നും ഒറ്റയ്ക്ക് എഴുതുമ്പോഴുള്ള രൂപത്തിൽ (ചേർക്കാതെ), ഹറക്കത്ത് സഹിതം, ഓരോ കള്ളിയിലും എഴുതുക (${m})</div><div class="ar big" style="font-size:54px">${p.joined}</div>`,audio:p.joined,kind:'draw',cells:cl,ctx}};
+const W12=[['كتاب', 'കിതാബ്', 'പുസ്തകം', '📖'], ['باب', 'ബാബ്', 'വാതിൽ', '🚪'], ['نور', 'നൂർ', 'പ്രകാശം', '💡'], ['سلام', 'സലാം', 'സമാധാനം', '🤝'], ['قلم', 'ഖലം', 'പേന', '✒️'], ['قمر', 'ഖമർ', 'ചന്ദ്രൻ', '🌙'], ['شمس', 'ശംസ്', 'സൂര്യൻ', '☀️'], ['نجم', 'നജ്മ്', 'നക്ഷത്രം', '⭐'], ['بيت', 'ബൈത്ത്', 'വീട്', '🏠'], ['جمل', 'ജമൽ', 'ഒട്ടകം', '🐪'], ['فيل', 'ഫീൽ', 'ആന', '🐘'], ['سمك', 'സമക്', 'മീൻ', '🐟'], ['ورد', 'വർദ്', 'പൂവ്', '🌹'], ['دين', 'ദീൻ', 'മതം', '🕌'], ['مسجد', 'മസ്ജിദ്', 'പള്ളി', '🕌'], ['حج', 'ഹജ്ജ്', 'തീർത്ഥാടനം', '🕋'], ['نبي', 'നബി', 'പ്രവാചകൻ', '🌟'], ['قلب', 'ഖൽബ്', 'ഹൃദയം', '❤️'], ['بس', 'ബസ്', 'ബസ്', '🚌'], ['كار', 'കാർ', 'കാർ', '🚗']];
+GEN[12]=()=>{const [w,m,mean,e]=W12[rnd(W12.length)],cl=[...w];
+  const groups=[];let c=0;cl.forEach((x,i)=>{c++;if(NOJ.includes(x)&&i<cl.length-1){groups.push(c);c=0}});if(c)groups.push(c);
+  return{key:'12'+w,prompt:`<div class="ml">ഈ വാക്ക് അറബിയിൽ എഴുതുക</div><div style="font-size:50px;line-height:1.1;margin:6px 0">${e}</div><div class="ml big" style="font-size:44px">${m}</div><div class="ml" style="font-size:18px;color:var(--mut)">(${mean})</div><div class="ml" style="font-size:14px;color:var(--mut);margin-top:6px">ഹറക്കത്ത് വേണ്ട. ചേരുന്നവ ചേർത്ത് എഴുതുക, ا د ذ ر ز و എന്നിവയ്ക്ക് ശേഷം ഗ്യാപ്പ് ഇടുക</div>`,kind:'draw',cells:[w],cl,groups}};
 GEN[11]=()=>{const [w,m]=W11[rnd(W11.length)];
   return{key:'11'+w,prompt:`<div class="ml">ശരിയായ വാക്ക് തിരഞ്ഞെടുക്കുക</div><div class="ml big" style="font-size:44px">${m}</div>`,audio:w,kind:'choice',opts:wordOpts(w),ans:w}};
 
@@ -286,23 +292,43 @@ function loadP(){try{P=JSON.parse(localStorage.getItem('cvp_'+S.key))||defP()}ca
 function save(){try{localStorage.setItem('cvp_'+S.key,JSON.stringify(P));localStorage.setItem('cv_last',JSON.stringify(S))}catch(e){}}
 async function dbGet(code){
   const k=ck(code);
-  if(CFG.DB_URL){try{const r=await fetchT(`${CFG.DB_URL}/comps/${k}.json`);const j=await r.json();return j?Object.values(j):[]}catch(e){}}
+  if(CFG.DB_URL&&navigator.onLine!==false){try{const r=await fetchT(`${CFG.DB_URL}/comps/${k}.json`,undefined,4000);const j=await r.json();return j?Object.values(j):[]}catch(e){}}
   try{return JSON.parse(localStorage.getItem('cvb_'+k)||'[]')}catch(e){return[]}
 }
-async function dbPut(code,en){
-  const c=ck(code),k=en.name.toLowerCase().replace(/[.#$\[\]\/]/g,'_');
-  const better=(n,o)=>!o||n.points>o.points||(n.points===o.points&&n.time<=o.time);
-  if(CFG.DB_URL){
-    const u=`${CFG.DB_URL}/comps/${c}/${encodeURIComponent(k)}.json`;
-    try{
-      let o=null;try{o=await (await fetchT(u)).json()}catch(e){}
-      if(!better(en,o))return;          // നേടിയ ഉയർന്ന പോയിന്റ് ഒരിക്കലും കുറയില്ല
-      await fetchT(u,{method:'PUT',body:JSON.stringify(en)});return}catch(e){}}
-  const a=await dbGet(code),o=a.find(x=>x.name.toLowerCase()===en.name.toLowerCase());
+const better=(n,o)=>!o||n.points>o.points||(n.points===o.points&&n.time<=o.time);
+function localPut(c,en){
+  let a=[];try{a=JSON.parse(localStorage.getItem('cvb_'+c)||'[]')}catch(e){}
+  const o=a.find(x=>x.name.toLowerCase()===en.name.toLowerCase());
   if(!better(en,o))return;
-  const b=a.filter(x=>x.name.toLowerCase()!==en.name.toLowerCase());b.push(en);
-  try{localStorage.setItem('cvb_'+c,JSON.stringify(b))}catch(e){}
+  a=a.filter(x=>x.name.toLowerCase()!==en.name.toLowerCase());a.push(en);
+  try{localStorage.setItem('cvb_'+c,JSON.stringify(a))}catch(e){}
 }
+const qGet=()=>{try{return JSON.parse(localStorage.getItem('cv_q')||'{}')}catch(e){return{}}};
+const qSet=q=>{try{localStorage.setItem('cv_q',JSON.stringify(q))}catch(e){}};
+function qAdd(c,en){const q=qGet(),id=c+'|'+en.name.toLowerCase();if(!q[id]||better(en,q[id].en))q[id]={c,en};qSet(q)}
+async function remotePut(c,en){            // ഓൺലൈനിൽ അയക്കുന്നു; ഉയർന്ന പോയിന്റ് ഒരിക്കലും കുറയില്ല
+  const k=en.name.toLowerCase().replace(/[.#$\[\]\/]/g,'_');
+  const u=`${CFG.DB_URL}/comps/${c}/${encodeURIComponent(k)}.json`;
+  let o=null;const r=await fetchT(u);o=await r.json();
+  if(!better(en,o))return;
+  const w=await fetchT(u,{method:'PUT',body:JSON.stringify(en)});if(!w.ok)throw new Error('put')
+}
+let flushing=false;
+async function flushQ(){                    // നെറ്റ് ഇല്ലാതിരുന്നപ്പോൾ സൂക്ഷിച്ചവ അയക്കുന്നു
+  if(!CFG.DB_URL||flushing||navigator.onLine===false)return;
+  flushing=true;
+  try{const q=qGet();for(const id of Object.keys(q)){try{await remotePut(q[id].c,q[id].en);const n=qGet();delete n[id];qSet(n)}catch(e){break}}}
+  finally{flushing=false}
+}
+async function dbPut(code,en){
+  const c=ck(code);
+  localPut(c,en);                            // എപ്പോഴും ഫോണിൽ സേവ്
+  if(!CFG.DB_URL)return;
+  qAdd(c,en);                                // അയച്ചു തീരുംവരെ ക്യൂവിൽ
+  await flushQ();
+}
+window.addEventListener('online',()=>{flushQ();updNet()});window.addEventListener('offline',updNet);
+function updNet(){const b=$('#netb');if(b)b.style.display=navigator.onLine===false?'block':'none'}
 const sortB=a=>a.sort((x,y)=>y.points-x.points||x.time-y.time);
 async function pushBoard(final){
   if(S.mode!=='comp')return;
@@ -328,17 +354,17 @@ function modal(html,btns){
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
 function renderHome(){
   const g=$('#lvgrid');g.innerHTML='';
-  for(let n=1;n<=11;n++){
+  for(let n=1;n<=12;n++){
     const st=n<P.level?'dn':n===P.level?'cur':MASTER?'op':'lock';
     const b=el('button','lv '+st);
     b.innerHTML=`<b>${st==='dn'?'✓':st==='lock'?'🔒':n}</b><span>${esc(LV[n].t)}</span>`;
     if(st!=='lock')b.onclick=()=>startLevel(n,n!==P.level);
     g.appendChild(b);
   }
-  const dn=Math.min(Math.max(P.level-1,0),11);
-  $('#pfill').style.width=(dn/11*100)+'%';$('#ptxt').textContent=`${dn}/11`+(MASTER?' 🔓':'');
+  const dn=Math.min(Math.max(P.level-1,0),12);
+  $('#pfill').style.width=(dn/12*100)+'%';$('#ptxt').textContent=`${dn}/12`+(MASTER?' 🔓':'');
   const c=$('#cont');
-  if(P.level>11){c.hidden=false;c.textContent='🎓 സർട്ടിഫിക്കറ്റ് കാണുക'}
+  if(P.level>12){c.hidden=false;c.textContent='🎓 സർട്ടിഫിക്കറ്റ് കാണുക'}
   else if(P.done.length||P.ls.streak||P.points){c.hidden=false;c.textContent=`⏩ തുടരുക – ലെവൽ ${P.level}`}
   else c.hidden=true;
   show('home');
@@ -359,7 +385,7 @@ $('#guide').onclick=()=>{
   modal(`<h2>📖 അക്ഷരങ്ങൾ</h2><div class="gnote">✅ ശേഷം വരുന്ന അക്ഷരത്തോട് ചേർത്ത് എഴുതാൻ പറ്റുന്നവ · ❌ ചേർത്ത് എഴുതാൻ പറ്റാത്തവ (ا د ذ ر ز و). വലത്തുള്ള ഉദാഹരണം അലിഫിനോട് (ا) ചേർത്തപ്പോൾ അക്ഷരം എങ്ങനെ മാറുന്നു എന്ന് കാണിക്കുന്നു.</div><div class="gnote">س ش ص ض എന്നിവ ചേർത്താൽ അവസാനത്തെ വാല് നേരെയാകും: سا · شا · صا · ضا. ജ ഹ ഖ ഐൻ ഗൈൻ മീം കാഫ് ഹാ യാ എന്നിവയുടെ വാലും വളവും ചേരുമ്പോൾ ഒഴിവാകും.</div>${rows}`,[['അടയ്ക്കുക',null]]);
 };
 $('#eye').onclick=()=>{const i=$('#code');i.type=i.type==='password'?'text':'password'};
-function go(){P.level>11?showDone():startLevel(Math.min(P.level,11),false)}
+function go(){P.level>12?showDone():startLevel(Math.min(P.level,12),false)}
 $('#trophyBtn').onclick=()=>showBoard(normCode($('#code').value)||S.code);
 $('#trophy2').onclick=()=>showBoard(S.code);
 $('#back').onclick=()=>{addTime();save();stopSay();G=null;renderHome()};
@@ -536,38 +562,32 @@ function checkIsolated(u,W,H,cells){
   return{ok:true,msg:''};
 }
 // ലെവൽ 9: ചേർത്തെഴുത്ത് – ചേരേണ്ടവ ചേർന്നോ, ഓരോ ഭാഗത്തും അക്ഷരരൂപം (തുടക്കം/നടുവ്/അവസാനം) ശരിയാണോ
+const DOTS={'ب':[0,1],'ت':[2,0],'ث':[3,0],'ج':[0,1],'خ':[1,0],'ذ':[1,0],'ز':[1,0],'ش':[3,0],'ض':[1,0],'ظ':[1,0],'غ':[1,0],'ف':[1,0],'ق':[2,0],'ن':[1,0],'ي':[0,2],'ة':[2,0]};
+// ചേർത്തെഴുത്ത് പരിശോധന: ഫോണ്ട് രൂപത്തോട് ഒത്തുനോക്കൽ കൈയെഴുത്തിൽ വിശ്വസനീയമല്ല, അതുകൊണ്ട് ഘടന നോക്കുന്നു:
+// 1) ചേരേണ്ടവ ചേർന്നോ / ചേരരുതാത്തവ വേർപെട്ടോ (ഭാഗങ്ങളുടെ എണ്ണം)  2) പുള്ളികൾ മുകളിലും താഴെയും ശരിയായ എണ്ണം  3) ഭാഗങ്ങളുടെ വീതിയുടെ അനുപാതം
 function checkJoined(u,W,H,cl,groups){
   const ic=inkComps(u,W,H,0,W);if(!ic||ic.comps.reduce((a,c)=>a+c.a,0)<60)return{ok:false,msg:'വളരെ കുറച്ച് മാത്രമേ എഴുതിയുള്ളൂ'};
-  const bodyMin=.42*ic.big;
-  const cs=ic.comps.filter(c=>Math.max(c.x1-c.x0+1,c.y1-c.y0+1)>=bodyMin).sort((a,b)=>(b.x0+b.x1)-(a.x0+a.x1));
-  if(cs.length>groups.length)return{ok:false,msg:`ചേരേണ്ട അക്ഷരങ്ങൾ ചേർന്നിട്ടില്ല. ${groups.length} ഭാഗങ്ങളായി എഴുതിയാൽ മതി, നിങ്ങൾ ${cs.length} ഭാഗങ്ങളായാണ് എഴുതിയത്.`};
-  // ഗ്രൂപ്പുകളായി അക്ഷരങ്ങൾ
-  const gs=[];let k=0;groups.forEach(n=>{gs.push(cl.slice(k,k+n));k+=n});
-  const test=(userInfo,parts)=>{
-    const good=tmplInfo(parts.join(''));
-    let others=[];
-    parts.forEach((x,i)=>['iso','ini','med','fin'].forEach(f=>others.push([f+i,tmplInfo(formStr(parts,i,f))])));
-    others.push(['all',tmplInfo(parts.join(ZN))]);
-    others=dedupe(good,others);
-    const r=compete(userInfo,good,others);
-    if(r.sg<.3)return{ok:false,msg:'അക്ഷരങ്ങളുടെ രൂപം പൊരുത്തപ്പെടുന്നില്ല'};
-    if(r.bk){
-      const m=/^(iso|ini|med|fin)(\d+)?$/.exec(r.bk);
-      return{ok:false,msg:m&&m[2]!==undefined?`"${stripH(parts[+m[2]])[0]}" വാക്കിൽ ഈ സ്ഥാനത്ത് വരുമ്പോൾ അതിന്റെ രൂപം മാറും. ചേർന്നുവരുന്ന രൂപത്തിൽ എഴുതുക`:'അക്ഷരരൂപങ്ങൾ ചേർക്കുമ്പോൾ മാറും, ശരിയായ രൂപത്തിൽ ചേർത്ത് എഴുതുക'};
-    }
-    return{ok:true,msg:''};
-  };
-  // ആദ്യം മുഴുവൻ വാക്കും ഒന്നായി നോക്കുന്നു; ശരിയല്ലെങ്കിൽ ഭാഗം ഭാഗമായും നോക്കുന്നു (ഗ്യാപ്പിന്റെ നീളം കുട്ടികൾക്ക് മാറാം)
-  const whole=test(shapeInfo(u,W,H,0,W),cl);
-  if(whole.ok)return whole;
-  if(cs.length===groups.length&&groups.length>1){
-    let allOk=true;
-    for(let i=0;i<cs.length&&allOk;i++){
-      const c=cs[i];if(!test(shapeInfo(u,W,H,c.x0-3,c.x1+4),gs[i]).ok)allOk=false;
-    }
-    if(allOk)return{ok:true,msg:''};
+  const big=ic.big,ext=c=>Math.max(c.x1-c.x0+1,c.y1-c.y0+1);
+  const body=ic.comps.filter(c=>ext(c)>=.25*big),marks=ic.comps.filter(c=>ext(c)<.25*big);
+  if(body.length>groups.length)return{ok:false,msg:`ചേരേണ്ട അക്ഷരങ്ങൾ ചേർന്നിട്ടില്ല. ${groups.length} ഭാഗങ്ങളായി എഴുതിയാൽ മതി, നിങ്ങൾ ${body.length} ഭാഗങ്ങളായാണ് എഴുതിയത്. (ا د ذ ر ز و എന്നിവയ്ക്ക് ശേഷം മാത്രം ഗ്യാപ്പ്)`};
+  if(body.length<groups.length)return{ok:false,msg:`ا د ذ ر ز و എന്നിവ ശേഷമുള്ള അക്ഷരത്തോട് ചേരില്ല. അവയ്ക്ക് ശേഷം ഗ്യാപ്പ് ഇടുക (${groups.length} ഭാഗം വേണം)`};
+  let cyy=0,cn=0;body.forEach(c=>{cyy+=c.sy;cn+=c.a});const cy=cyy/cn;let up=0,lo=0;
+  marks.forEach(c=>{const w=c.x1-c.x0+1,h=c.y1-c.y0+1,fill=c.a/(w*h);
+    if(Math.max(w,h)<=40&&Math.min(w,h)<=18&&fill>=.4){const n=Math.max(1,Math.round((Math.max(w,h)+6)/16));if(c.sy/c.a<cy)up+=n;else lo+=n}});
+  const ed=cl.reduce((a,x)=>{const d=DOTS[x[0]]||[0,0];return[a[0]+d[0],a[1]+d[1]]},[0,0]);
+  if(Math.abs(up-ed[0])>1||Math.abs(lo-ed[1])>1||Math.abs(up+lo-ed[0]-ed[1])>1)
+    return{ok:false,msg:`പുള്ളികൾ ശരിയല്ല: ഈ വാക്കിൽ മുകളിൽ ${ed[0]}, താഴെ ${ed[1]} പുള്ളി വേണം (നിങ്ങളുടേത് മുകളിൽ ${up}, താഴെ ${lo})`};
+  if(body.length>1){
+    const ctx=cl.map((x,i)=>(i>0&&!NOJ.includes(cl[i-1][0])?'\u200D':'')+x+(i<cl.length-1&&!NOJ.includes(x[0])?'\u200D':'')).join('');
+    const tc=mk(W,H),tx=tc.getContext('2d');tx.fillStyle='#f5c542';paintCell(tx,W,H,1,0,ctx);
+    const ti=inkComps(tx.getImageData(0,0,W,H).data,W,H,0,W);
+    if(ti){const tb=ti.comps.filter(c=>ext(c)>=.25*ti.big).sort((a,b)=>(b.x0+b.x1)-(a.x0+a.x1));
+      const ub=body.slice().sort((a,b)=>(b.x0+b.x1)-(a.x0+a.x1));
+      if(tb.length===ub.length){const tw=tb.reduce((a,c)=>a+c.x1-c.x0+1,0),uw=ub.reduce((a,c)=>a+c.x1-c.x0+1,0);let dev=0;
+        tb.forEach((c,i)=>{dev=Math.max(dev,Math.abs((c.x1-c.x0+1)/tw-(ub[i].x1-ub[i].x0+1)/uw))});
+        if(dev>.2)return{ok:false,msg:'ഭാഗങ്ങളുടെ വലുപ്പം ശരിയല്ല: ഓരോ ഭാഗത്തിലും ശരിയായ എണ്ണം അക്ഷരങ്ങൾ എഴുതുക'}}}
   }
-  return whole;
+  return{ok:true,msg:''};
 }
 
 R.draw=(q,A)=>{
@@ -626,9 +646,9 @@ function celebrate(then){
 }
 function levelDone(){
   stopSay();addTime();const n=G.n,practice=G.practice;
-  if(!practice){if(!P.done.includes(n))P.done.push(n);if(P.level===n)P.level=n+1;P.ls={streak:0,correct:0,asked:0,best:0};save();if(n<11)pushBoard(false)}
+  if(!practice){if(!P.done.includes(n))P.done.push(n);if(P.level===n)P.level=n+1;P.ls={streak:0,correct:0,asked:0,best:0};save();if(n<12)pushBoard(false)}
   celebrate(async()=>{
-    if(n===11&&!practice){await pushBoard(true);finalize();return}
+    if(n===12&&!practice){await pushBoard(true);finalize();return}
     modal(`<h2>🎉 ലെവൽ ${n} പൂർത്തിയായി!</h2><p>${esc(LV[n].t)}</p><p>⭐ ${P.points} പോയിന്റ്${S.mode==='comp'?' · ⏱ '+fmt(P.time):''}</p>`,
       practice?[['ലെവൽ മാപ്പ്',()=>{G=null;renderHome()}]]:[['അടുത്ത ലെവൽ ▶',()=>startLevel(n+1,false),'gold'],['മാപ്പ്',()=>{G=null;renderHome()}]]);
   });
@@ -646,7 +666,15 @@ function showDone(){
   show('fin');drawCert();
 }
 $('#certName').oninput=drawCert;$('#hideRank').onchange=drawCert;
+let CERT_STYLE='modern';try{CERT_STYLE=localStorage.getItem('cv_cs')||'modern'}catch(e){}
+function setCS(s){CERT_STYLE=s;try{localStorage.setItem('cv_cs',s)}catch(e){}$('#stM').classList.toggle('ghost',s!=='modern');$('#stC').classList.toggle('ghost',s!=='classic');drawCert()}
+$('#stM').onclick=()=>setCS('modern');$('#stC').onclick=()=>setCS('classic');
 function drawCert(){
+  $('#stM').classList.toggle('ghost',CERT_STYLE!=='modern');$('#stC').classList.toggle('ghost',CERT_STYLE!=='classic');
+  if(CERT_STYLE==='modern')return drawCertModern();
+  drawCertClassic();
+}
+function drawCertClassic(){
   const c=$('#cert'),W=1200,H=850;c.width=W;c.height=H;const x=c.getContext('2d');
   const name=$('#certName').value.trim()||'Your Name';
   const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#fffdf2');g.addColorStop(1,'#fdf0c8');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -657,12 +685,69 @@ function drawCert(){
   x.fillStyle='#b8820a';let fs=96;x.font=`800 ${fs}px "Noto Sans Malayalam",serif`;while(x.measureText(name).width>W-260&&fs>30){fs-=4;x.font=`800 ${fs}px "Noto Sans Malayalam",serif`}
   x.fillText(name,W/2,400);x.fillRect(220,425,W-440,3);
   x.fillStyle='#333';x.font='500 36px "Noto Sans Malayalam",sans-serif';
-  x.fillText('has successfully completed all 11 levels of',W/2,500);
+  x.fillText('has successfully completed all 12 levels of',W/2,500);
   x.font='800 44px "Noto Sans Malayalam",sans-serif';x.fillStyle='#0f5a5c';x.fillText('CV – Arabic Learning Game',W/2,565);
   x.font='600 36px "Noto Sans Malayalam",sans-serif';x.fillStyle='#333';
   x.fillText(`Points: ${P.points}`+(S.mode==='comp'?`   |   Time: ${fmt(P.time)}`:''),W/2,640);
   if(S.mode==='comp'&&P.rank&&!$('#hideRank').checked){x.font='800 52px "Noto Sans Malayalam",sans-serif';x.fillStyle='#b8820a';x.fillText('🏆 '+rankTxt(P.rank),W/2,720)}
   x.font='400 26px "Noto Sans Malayalam",sans-serif';x.fillStyle='#777';x.fillText(new Date().toLocaleDateString('en-GB'),W/2,775);
+}
+
+function star8(x,cx,cy,r){x.beginPath();for(let i=0;i<16;i++){const a=Math.PI/8*i-Math.PI/2,rr=i%2?r*.58:r;x.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}x.closePath()}
+function drawCertModern(){
+  const c=$('#cert'),W=1200,H=850;c.width=W;c.height=H;const x=c.getContext('2d');
+  const name=$('#certName').value.trim()||'Your Name';
+  const F='"Noto Sans Malayalam","Inter",system-ui,sans-serif';
+  const sp=v=>{try{x.letterSpacing=v}catch(e){}};
+  // background
+  x.fillStyle='#fbfaf4';x.fillRect(0,0,W,H);
+  // left band with star pattern
+  const BW=300,g=x.createLinearGradient(0,0,BW,H);g.addColorStop(0,'#0a3f42');g.addColorStop(1,'#0f6a66');x.fillStyle=g;x.fillRect(0,0,BW,H);
+  x.save();x.beginPath();x.rect(0,0,BW,H);x.clip();x.strokeStyle='rgba(255,255,255,.10)';x.lineWidth=2;
+  for(let r=0;r<9;r++)for(let q=0;q<4;q++){star8(x,(q+(r%2?.5:0))*100+30,r*100+20,44);x.stroke()}
+  x.restore();
+  x.fillStyle='#e0b13a';x.fillRect(BW,0,8,H);
+  // medal
+  const mx=150,my=300;
+  const mg=x.createRadialGradient(mx-20,my-30,10,mx,my,100);mg.addColorStop(0,'#fff0b0');mg.addColorStop(.5,'#e8b93c');mg.addColorStop(1,'#b7861a');
+  x.fillStyle='rgba(0,0,0,.25)';x.beginPath();x.arc(mx+4,my+8,98,0,7);x.fill();
+  x.fillStyle=mg;x.beginPath();x.arc(mx,my,98,0,7);x.fill();
+  x.strokeStyle='#fff3c4';x.lineWidth=4;x.beginPath();x.arc(mx,my,84,0,7);x.stroke();
+  x.fillStyle='#0a3f42';x.textAlign='center';x.font=`800 78px ${F}`;sp('0px');x.fillText('12',mx,my+14);
+  x.font=`700 20px ${F}`;sp('4px');x.fillText('LEVELS',mx,my+46);
+  x.fillStyle='#fff';x.font=`700 26px ${F}`;sp('3px');x.fillText('CV',mx,540);
+  x.font=`500 18px ${F}`;sp('2px');x.fillStyle='rgba(255,255,255,.75)';x.fillText('ARABIC',mx,568);x.fillText('LEARNING GAME',mx,592);
+  x.font='700 56px "Noto Naskh Arabic",serif';sp('0px');x.fillStyle='#f3d27a';x.fillText('مُمْتَاز',mx,720);
+  // main content
+  const L=360,R=W-70,CX=(L+R)/2;
+  x.strokeStyle='rgba(224,177,58,.55)';x.lineWidth=3;x.strokeRect(L-30,40,R-L+60,H-80);
+  x.textAlign='center';
+  x.fillStyle='#b7861a';x.font=`700 24px ${F}`;sp('10px');x.fillText('CERTIFICATE',CX,128);
+  x.fillStyle='#0a3f42';x.font=`800 76px ${F}`;sp('0px');x.fillText('of Completion',CX,215);
+  x.fillStyle='#e0b13a';x.fillRect(CX-60,245,120,5);
+  x.fillStyle='#667';x.font=`500 27px ${F}`;x.fillText('This certificate is proudly presented to',CX,315);
+  let fs=92;x.fillStyle='#0b2f33';x.font=`800 ${fs}px ${F}`;while(x.measureText(name).width>R-L-40&&fs>34){fs-=4;x.font=`800 ${fs}px ${F}`}
+  x.fillText(name,CX,420);
+  const nw=Math.min(R-L-40,Math.max(300,x.measureText(name).width+60));x.fillStyle='#e0b13a';x.fillRect(CX-nw/2,446,nw,3);
+  x.fillStyle='#555';x.font=`500 29px ${F}`;x.fillText('for successfully completing all 12 levels of',CX,508);
+  x.fillStyle='#0f6a66';x.font=`800 42px ${F}`;x.fillText('CV – Arabic Learning Game',CX,562);
+  // chips
+  const chips=[['POINTS',String(P.points)]];
+  if(S.mode==='comp'){chips.push(['TIME',fmt(P.time)]);if(P.rank&&!$('#hideRank').checked)chips.push(['RANK',rankTxt(P.rank).replace(' Rank','')])}
+  else chips.push(['LEVELS','12 / 12']);
+  const cw=190,ch=104,gap=24,tot=chips.length*cw+(chips.length-1)*gap;let cx0=CX-tot/2;
+  chips.forEach(([k,v])=>{
+    x.fillStyle='#fff';x.shadowColor='rgba(10,63,66,.18)';x.shadowBlur=16;x.shadowOffsetY=5;
+    x.beginPath();x.roundRect(cx0,610,cw,ch,18);x.fill();x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0;
+    x.fillStyle='#e0b13a';x.fillRect(cx0+18,610+14,28,4);
+    x.fillStyle='#889';x.font=`700 17px ${F}`;sp('4px');x.fillText(k,cx0+cw/2,610+44);
+    x.fillStyle='#0a3f42';x.font=`800 38px ${F}`;sp('0px');x.fillText(v,cx0+cw/2,610+88);
+    cx0+=cw+gap});
+  // footer
+  const d=new Date(),ds=d.toLocaleDateString('en-GB');
+  let h=0;const sd=name+ds+P.points;for(let i=0;i<sd.length;i++)h=(h*31+sd.charCodeAt(i))>>>0;
+  x.textAlign='left';x.fillStyle='#889';x.font=`500 21px ${F}`;sp('1px');x.fillText('Date: '+ds,L,790);
+  x.textAlign='right';x.fillText('No. CV-'+h.toString(36).toUpperCase().padStart(6,'0').slice(0,6),R,790);
 }
 function certBlob(){return new Promise(r=>$('#cert').toBlob(r,'image/png'))}
 $('#dl').onclick=async()=>{const b=await certBlob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='CV-Certificate.png';a.click()};
@@ -684,6 +769,7 @@ let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#install').hidden=false});
 $('#install').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();try{await deferredInstall.userChoice}catch(e){}deferredInstall=null;$('#install').hidden=true};
 window.addEventListener('appinstalled',()=>{$('#install').hidden=true});
+updNet();flushQ();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 </script>
 </body>
