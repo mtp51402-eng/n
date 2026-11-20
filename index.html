@@ -92,6 +92,10 @@ input:focus{outline:0;border-color:var(--gold)}
 .mask.on{display:flex}
 .box{background:#0f3036;border:1px solid var(--line);border-radius:24px;padding:22px;width:100%;max-width:420px;text-align:center;max-height:90vh;overflow:auto;animation:pop .35s}
 .box h2{margin:0 0 10px}
+.grow{display:grid;grid-template-columns:44px 1fr 74px;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+.grow .ar{font-size:32px;line-height:1.2;text-align:center}.grow small{display:block;color:var(--mut);font-size:12px;line-height:1.3}
+.grow .ex{font-size:30px;text-align:center}.grow .no{color:#ff8a80;font-size:13px;text-align:center}
+.gnote{font-size:13px;color:var(--mut);text-align:left;margin:8px 0}
 .row3{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border-radius:14px;padding:10px 12px;margin:8px 0;text-align:left}
 .row3 b{font-size:26px}.row3 span{flex:1;font-weight:600}.row3 em{font-style:normal;color:var(--gold)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;padding:10px 16px;border-radius:12px;font-size:14px;display:none;z-index:40;max-width:90%;text-align:center}
@@ -119,6 +123,7 @@ input:focus{outline:0;border-color:var(--gold)}
     <button class="btn gold" id="startComp">🏁 കോമ്പറ്റീഷൻ തുടങ്ങാം</button>
   </div>
   <button class="btn" id="startNormal">▶ സാധാരണ കളി (കോഡ് വേണ്ട)</button>
+  <button class="btn" id="guide">📖 അക്ഷരങ്ങളും ചേർത്തെഴുതലും (പാഠം)</button>
   <button class="btn ghost" id="cont" hidden></button>
   <button class="btn" id="install" hidden>📲 ഫോണിൽ ഇൻസ്റ്റാൾ ചെയ്യുക</button>
   <div id="lvgrid" class="lvgrid"></div>
@@ -174,7 +179,8 @@ function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';cl
 
 /* ================= DATA ================= */
 const FA='\u064E',KA='\u0650',DA='\u064F',SU='\u0652',SH='\u0651';
-const LET=[["ا","അലിഫ്","ألف"],["ب","ബാഅ്","باء"],["ت","താഅ്","تاء"],["ث","സാഅ്","ثاء"],["ج","ജീം","جيم"],["ح","ഹാഅ്","حاء"],["خ","ഖാഅ്","خاء"],["د","ദാൽ","دال"],["ذ","ധാൽ","ذال"],["ر","റാഅ്","راء"],["ز","സായ്","زاي"],["س","സീൻ","سين"],["ش","ശീൻ","شين"],["ص","സ്വാദ്","صاد"],["ض","ദ്വാദ്","ضاد"],["ط","ത്വാഅ്","طاء"],["ظ","ള്വാഅ്","ظاء"],["ع","ഐൻ","عين"],["غ","ഗൈൻ","غين"],["ف","ഫാഅ്","فاء"],["ق","ഖാഫ്","قاف"],["ك","കാഫ്","كاف"],["ل","ലാം","لام"],["م","മീം","ميم"],["ن","നൂൻ","نون"],["ه","ഹാഅ്","هاء"],["و","വാവ്","واو"],["ي","യാഅ്","ياء"]];
+const LET=[["ا","അലിഫ്","ألف"],["ب","ബാ","باء"],["ت","താ","تاء"],["ث","ഥാ","ثاء"],["ج","ജീം","جيم"],["ح","ഹാ","حاء","തൊണ്ടയുടെ നടുഭാഗത്ത് നിന്ന്"],["خ","ഖാ","خاء"],["د","ദാൽ","دال"],["ذ","ദാൽ","ذال","നാവിൽ നിന്നും വരുന്ന മൃദുവായ ദാൽ"],["ر","റാ","راء"],["ز","സാ (സായ്)","زاي"],["س","സീൻ","سين"],["ش","ഷീൻ","شين"],["ص","സ്വാദ്","صاد"],["ض","ള്വാദ്","ضاد"],["ط","ത്വാ","طاء"],["ظ","ള്വാ","ظاء"],["ع","ഐൻ","عين"],["غ","ഗൈൻ","غين"],["ف","ഫാ","فاء"],["ق","ഖാഫ്","قاف"],["ك","കാഫ്","كاف"],["ل","ലാം","لام"],["م","മീം","ميم"],["ن","നൂൻ","نون"],["ه","ഹാ","هاء","തൊണ്ടയുടെ അടിഭാഗത്ത് നിന്നുള്ളത്"],["و","വാവ്","واو"],["ي","യാ","ياء"]];
+const NOJOIN='ادذرزو'; // ശേഷം വരുന്ന അക്ഷരത്തോട് ചേർത്ത് എഴുതാൻ പറ്റാത്തവ (❌)
 const BASE=LET.slice(1);
 const HN={[FA]:'ഫത്ഹ്',[KA]:'കസ്‌റ്',[DA]:'ദമ്മ്',[SU]:'സുകൂൻ'};
 const U3=[['ب','ബ'],['ت','ത'],['ج','ജ'],['د','ദ'],['ر','ര'],['ش','ശ'],['ف','ഫ'],['ك','ക'],['ل','ല'],['م','മ'],['ن','ന'],['ه','ഹ'],['س','സ'],['ط','ട']];
@@ -214,11 +220,11 @@ const LV=[null,
  {t:'അക്ഷരമാല',min:10},{t:'ഹറക്കത്ത് തിരിച്ചറിയൽ',min:6},{t:'ഹറക്കത്ത് വായന',min:8},{t:'മദ്ദ് അക്ഷരം',min:20},
  {t:'രണ്ടക്ഷര വാക്കുകൾ',min:8},{t:'ശദ്ദ് സ്ഥാനം',min:6},{t:'ശദ്ദ് അക്ഷരം',min:6},{t:'മദ്ദ് ഗ്യാപ്പ്',min:6},
  {t:'കൂട്ടിയെഴുത്ത്',min:4},{t:'വേർതിരിച്ചെഴുത്ത്',min:4},{t:'സമ്പൂർണ്ണ വാക്കുകൾ',min:8}];
-const STREAK=4;
+const STREAK=4,QN=20; // ഓരോ ലെവലിലും 20 ചോദ്യം; അതിനിടയിൽ എവിടെയെങ്കിലും തുടർച്ചയായ 4 ശരി
 
 const GEN={};
 GEN[1]=()=>{const pool=G&&G.seen?LET.filter(l=>!G.seen.has(l[0])):LET;const t=(pool.length?pool:LET)[rnd(pool.length||28)];const o=shuf([t,...pick(LET.filter(x=>x!==t),5)]);
-  return{key:'1'+t[0],prompt:`<div class="ml big" style="font-size:46px">${t[1]}</div><div class="ml">ഈ അക്ഷരം തിരഞ്ഞെടുക്കുക</div>`,audio:t[2],kind:'choice',opts:o.map(x=>({t:x[0],v:x[0],c:'ar'})),ans:t[0]}};
+  return{key:'1'+t[0],prompt:`<div class="ml big" style="font-size:46px">${t[1]}</div>${t[3]?`<div class="ml" style="font-size:14px;color:var(--mut)">(${t[3]})</div>`:''}<div class="ml">ഈ അക്ഷരം തിരഞ്ഞെടുക്കുക</div>`,audio:t[2],kind:'choice',opts:o.map(x=>({t:x[0],v:x[0],c:'ar'})),ans:t[0]}};
 GEN[2]=()=>{const hs=[FA,KA,DA,SU],h=hs[rnd(4)],nT=3+rnd(2);let it=[];
   for(let i=0;i<12;i++)it.push({l:BASE[rnd(BASE.length)][0],h:i<nT?h:pick(hs.filter(x=>x!==h))[0]});it=shuf(it);
   return{key:'2'+h+it.map(i=>i.l).join(''),prompt:`<div class="ml">ഈ ഹറകത്തുള്ള (${HN[h]}) എല്ലാ അക്ഷരങ്ങളും തിരഞ്ഞെടുക്കുക</div><div class="ar big">${BASE[rnd(BASE.length)][0]+h}</div>`,
@@ -347,6 +353,11 @@ $('#startComp').onclick=()=>{
   setSession({mode:'comp',code,name,key:'c|'+ck(code)+'|'+name.toLowerCase()});go();
 };
 $('#cont').onclick=go;
+$('#guide').onclick=()=>{
+  const rows=LET.map(l=>{const c=l[0],j=!NOJOIN.includes(c);
+    return `<div class="grow"><span class="ar">${c}</span><span>${esc(l[1])}${l[3]?`<small>${esc(l[3])}</small>`:''}<small>${j?'✅ ശേഷമുള്ള അക്ഷരത്തോട് ചേർക്കാം':'❌ ശേഷമുള്ള അക്ഷരത്തോട് ചേർക്കില്ല'}</small></span>${j?`<span class="ar ex">${c}ا</span>`:`<span class="no">ചേരില്ല</span>`}</div>`}).join('');
+  modal(`<h2>📖 അക്ഷരങ്ങൾ</h2><div class="gnote">✅ ശേഷം വരുന്ന അക്ഷരത്തോട് ചേർത്ത് എഴുതാൻ പറ്റുന്നവ · ❌ ചേർത്ത് എഴുതാൻ പറ്റാത്തവ (ا د ذ ر ز و). വലത്തുള്ള ഉദാഹരണം അലിഫിനോട് (ا) ചേർത്തപ്പോൾ അക്ഷരം എങ്ങനെ മാറുന്നു എന്ന് കാണിക്കുന്നു.</div><div class="gnote">س ش ص ض എന്നിവ ചേർത്താൽ അവസാനത്തെ വാല് നേരെയാകും: سا · شا · صا · ضا. ജ ഹ ഖ ഐൻ ഗൈൻ മീം കാഫ് ഹാ യാ എന്നിവയുടെ വാലും വളവും ചേരുമ്പോൾ ഒഴിവാകും.</div>${rows}`,[['അടയ്ക്കുക',null]]);
+};
 $('#eye').onclick=()=>{const i=$('#code');i.type=i.type==='password'?'text':'password'};
 function go(){P.level>11?showDone():startLevel(Math.min(P.level,11),false)}
 $('#trophyBtn').onclick=()=>showBoard(normCode($('#code').value)||S.code);
@@ -358,7 +369,7 @@ $('#finBoard').onclick=()=>showBoard(S.code);
 /* ================= GAME CORE ================= */
 function startLevel(n,practice){
   const resume=!practice&&n===P.level;
-  G={n,practice,streak:resume?P.ls.streak:0,correct:resume?P.ls.correct:0,wq:[],since:9,t0:Date.now(),hint:true,last:null,lock:0,seen:new Set(resume&&P.ls.seen?P.ls.seen:[])};
+  G={n,practice,streak:resume?P.ls.streak:0,correct:resume?P.ls.correct:0,asked:resume?(P.ls.asked||0):0,best:resume?(P.ls.best||0):0,wq:[],since:9,t0:Date.now(),hint:true,last:null,lock:0,seen:new Set(resume&&P.ls.seen?P.ls.seen:[])};
   $('#lvt').textContent=`ലെവൽ ${n}`+(practice?' (പ്രാക്ടീസ്)':'');
   $('#tm').textContent='';
   show('game');nextQ();
@@ -367,7 +378,7 @@ function addTime(){if(G&&G.t0){const d=(Date.now()-G.t0)/1000;if(!G.practice)P.t
 setInterval(()=>{if(G&&S.mode==='comp'&&$('#game').classList.contains('on'))$('#tm').textContent='⏱ '+fmt(P.time+(Date.now()-G.t0)/1000)},500);
 function hud(){
   $('#dots').innerHTML=Array.from({length:STREAK},(_,i)=>`<i class="${i<G.streak?'on':''}"></i>`).join('');
-  $('#cnt').textContent=`തുടർച്ചയായ ശരി: ${G.streak}/${STREAK} · ${G.n===1?'അക്ഷരങ്ങൾ: '+G.seen.size+'/28':'ശരി ഉത്തരങ്ങൾ: '+G.correct+'/'+LV[G.n].min}`+(G.wq.length?` · ആവർത്തിക്കാൻ: ${G.wq.length}`:'')+(S.mode!=='normal'||true?` · ⭐ ${P.points}`:'');
+  $('#cnt').textContent=`ചോദ്യം: ${Math.min(G.asked,QN)}/${QN} · തുടർച്ചയായ ശരി: ${G.streak}/${STREAK}${G.best>=STREAK?' ✔':''}`+(G.wq.length?` · ആവർത്തിക്കാൻ: ${G.wq.length}`:'')+` · ⭐ ${P.points}`;
 }
 function nextQ(){
   let q;
@@ -384,13 +395,14 @@ function render(q){
   R[q.kind](q,A);hud();
 }
 function finishQ(ok){
-  const q=G.q;addTime();
+  const q=G.q;addTime();G.asked++;
   if(ok){if(G.n===1)G.seen.add(q.ans);G.streak++;G.correct++;if(!G.practice)P.points+=100+Math.max(0,50-Math.floor((Date.now()-G.qt)/400));G.wq=G.wq.filter(x=>x!==q)}
   else{G.streak=0;if(!G.wq.includes(q))G.wq.push(q);G.since=0}
+  if(G.streak>G.best)G.best=G.streak;
   G.since++;
-  if(!G.practice)P.ls={streak:G.streak,correct:G.correct,seen:[...G.seen]};
+  if(!G.practice)P.ls={streak:G.streak,correct:G.correct,asked:G.asked,best:G.best,seen:[...G.seen]};
   save();hud();
-  setTimeout(()=>{if(G&&G.streak>=STREAK&&G.correct>=LV[G.n].min&&!G.wq.length&&(G.n!==1||G.seen.size>=28))levelDone();else if(G)nextQ()},ok?650:1500);
+  setTimeout(()=>{if(G&&G.asked>=QN&&G.best>=STREAK)levelDone();else if(G)nextQ()},ok?650:1500);
 }
 R.choice=(q,A)=>{
   const g=el('div','opts'+(q.row?' row':''));
@@ -492,13 +504,15 @@ function diffScore(u,good,t,r){
   if(go<10||vo<10)return null;
   return{a:gc/go,b:vc/vo};
 }
-function compete(u,good,others,th=.25){
+function compete(u,good,others,th=.25,bmin=.45){
   const sg=shapeScore(u,good);let worst=-9,bk=null;
-  others.forEach(([k,t])=>{const d=diffScore(u,good,t,1);if(d&&d.b>.45&&d.b-d.a>worst){worst=d.b-d.a;bk=k}});
+  others.forEach(([k,t])=>{const d=diffScore(u,good,t,1);if(d&&d.b>bmin&&d.b-d.a>worst){worst=d.b-d.a;bk=k}});
   return{sg,bk:worst>th?bk:null};
 }
 function dedupe(good,list){return list.filter(([k,t])=>shapeScore(t,good)<.92)}
 
+const ISO_TH=.2,ISO_B=.35;
+const ASP_LO=.58,ASP_HI=1.75,XSIM={ي:'بتثنقى',ن:'بيق',ق:'نفو',ج:'حخع',ح:'جخع',خ:'جحغ',ع:'غجح',غ:'عخ',س:'شصمن',ش:'سصض',ك:'ل',ل:'كا',م:'ه',ه:'مو'};
 // ലെവൽ 10: ഓരോ കള്ളിയിലും ഒറ്റയ്ക്കുള്ള രൂപം
 function checkIsolated(u,W,H,cells){
   const N=cells.length;let why='';
@@ -508,8 +522,15 @@ function checkIsolated(u,W,H,cells){
     const base=cells[i];
     const iso=tmplInfo(base);
     const others=dedupe(iso,['ini','med','fin'].map(f=>[f,tmplInfo(f==='ini'?base+ZW:f==='med'?ZW+base+ZW:ZW+base)]));
-    const r=compete(gu,iso,others,.4);
+    const r=compete(gu,iso,others,ISO_TH,ISO_B);
     if(r.sg<.25)return{ok:false,msg:'ഒറ്റയ്ക്കുള്ള അക്ഷരരൂപം പൊരുത്തപ്പെടുന്നില്ല'};
+    // വലുപ്പ അനുപാതം ശരിയായ ഒറ്റ രൂപത്തോട് അടുത്തായിരിക്കണം (ഉദാ: വാലുള്ള ഒറ്റ "യാ" അല്ലാതെ വെറും കപ്പ് രൂപം തള്ളും)
+    const ar=gu.asp/iso.asp;
+    if(ar<ASP_LO||ar>ASP_HI)return{ok:false,msg:'ഒറ്റയ്ക്കുള്ള അക്ഷരത്തിന്റെ ആകൃതി/വാല് ശരിയായില്ല. ഒറ്റയ്ക്ക് വരുമ്പോഴുള്ള പൂർണ്ണ രൂപത്തിൽ എഴുതുക'};
+    // സമാന രൂപമുള്ള മറ്റ് അക്ഷരത്തോടാണോ കൂടുതൽ ചേരുന്നത്
+    const cf=[...new Set((SIM[base[0]]||'')+(XSIM[base[0]]||''))].filter(c=>!(base[0]==='ب'&&c==='ن')).map(c=>[c,tmplInfo(c)]).filter(([c,t])=>t&&shapeScore(t,iso)<.7);
+    const cr=compete(gu,iso,cf,.3,.5);
+    if(cr.bk)return{ok:false,msg:`ഇത് "${cr.bk}" പോലെയാണ് തോന്നുന്നത്, "${base[0]}" അല്ല. ശരിയായ ഒറ്റ രൂപത്തിൽ എഴുതുക`};
     if(r.bk)return{ok:false,msg:'ഇത് വാക്കിൽ ചേർന്നുവരുന്ന രൂപമാണ്; ഒറ്റയ്ക്ക് എഴുതുമ്പോഴുള്ള (ചേർക്കാത്ത) രൂപത്തിൽ എഴുതുക'};
   }
   return{ok:true,msg:''};
@@ -564,7 +585,7 @@ R.draw=(q,A)=>{
   dc.onpointermove=e=>{if(!dr)return;const[x,y]=pos(e);d.strokeStyle='#f5c542';d.lineWidth=10;d.lineCap='round';d.beginPath();d.moveTo(lx,ly);d.lineTo(x,y);d.stroke();lx=x;ly=y};
   dc.onpointerup=dc.onpointercancel=()=>dr=false;
   const acts=$('#acts');
-  const bc=el('button','btn');bc.textContent='🗑 മായ്ക്കുക';bc.onclick=()=>{if(G.lock)return;d.clearRect(0,0,W,H);any=false;wrap.classList.remove('bad','ok');ghost();const so=$('#selfok');if(so)so.remove()};
+  const bc=el('button','btn');bc.textContent='🗑 മായ്ക്കുക';bc.onclick=()=>{if(G.lock)return;d.clearRect(0,0,W,H);any=false;wrap.classList.remove('bad','ok');ghost();};
   const bk=el('button','btn gold');bk.textContent='✔ പരിശോധിക്കുക';
   bk.onclick=()=>{
     if(G.lock)return;if(!any){toast('ആദ്യം എഴുതുക');return}G.lock=1;
@@ -572,13 +593,6 @@ R.draw=(q,A)=>{
     const r=q.groups?checkJoined(u,W,H,q.cl,q.groups):checkIsolated(u,W,H,q.cells);ok=r.ok;why=r.msg;
     if(!ok&&why)toast(why);
     wrap.classList.add(ok?'ok':'bad');if(!ok)ghost('#22c55e',.6);
-    // മത്സരമല്ലാത്ത കളിയിൽ: തെറ്റ് വന്നാൽ വീണ്ടും ശ്രമിക്കാം, അല്ലെങ്കിൽ "ശരിയാണ്" എന്ന് ഉറപ്പിക്കാം
-    if(!ok&&(S.mode!=='comp'||G.practice)){
-      G.lock=0;
-      if(!$('#selfok')){const so=el('button','btn');so.id='selfok';so.textContent='✔ ഞാൻ ശരിയായി എഴുതി';
-        so.onclick=()=>{if(G.lock)return;G.lock=1;wrap.classList.remove('bad');wrap.classList.add('ok');so.remove();finishQ(true)};acts.appendChild(so)}
-      return;
-    }
     finishQ(ok);
   };
   acts.append(bc,bk);
@@ -612,7 +626,7 @@ function celebrate(then){
 }
 function levelDone(){
   stopSay();addTime();const n=G.n,practice=G.practice;
-  if(!practice){if(!P.done.includes(n))P.done.push(n);if(P.level===n)P.level=n+1;P.ls={streak:0,correct:0};save();if(n<11)pushBoard(false)}
+  if(!practice){if(!P.done.includes(n))P.done.push(n);if(P.level===n)P.level=n+1;P.ls={streak:0,correct:0,asked:0,best:0};save();if(n<11)pushBoard(false)}
   celebrate(async()=>{
     if(n===11&&!practice){await pushBoard(true);finalize();return}
     modal(`<h2>🎉 ലെവൽ ${n} പൂർത്തിയായി!</h2><p>${esc(LV[n].t)}</p><p>⭐ ${P.points} പോയിന്റ്${S.mode==='comp'?' · ⏱ '+fmt(P.time):''}</p>`,
