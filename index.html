@@ -219,9 +219,9 @@ function wordOpts(w,n=4){
 
 /* ================= LEVELS ================= */
 const LV=[null,
- {t:'അക്ഷരമാല',min:28},{t:'ഹറക്കത്ത് തിരിച്ചറിയൽ',min:12},{t:'ഹറക്കത്ത് വായന',min:10},{t:'മദ്ദ് അക്ഷരം',min:20},
- {t:'രണ്ടക്ഷര വാക്കുകൾ',min:10},{t:'ശദ്ദ് സ്ഥാനം',min:10},{t:'ശദ്ദ് അക്ഷരം',min:10},{t:'മദ്ദ് ഗ്യാപ്പ്',min:10},
- {t:'കൂട്ടിയെഴുത്ത്',min:10},{t:'വേർതിരിച്ചെഴുത്ത്',min:10},{t:'സമ്പൂർണ്ണ വാക്കുകൾ',min:8},{t:'മലയാളം → അറബി എഴുത്ത്',min:10}];
+ {t:'അക്ഷരമാല',min:10},{t:'ഹറക്കത്ത് തിരിച്ചറിയൽ',min:6},{t:'ഹറക്കത്ത് വായന',min:8},{t:'മദ്ദ് അക്ഷരം',min:20},
+ {t:'രണ്ടക്ഷര വാക്കുകൾ',min:8},{t:'ശദ്ദ് സ്ഥാനം',min:6},{t:'ശദ്ദ് അക്ഷരം',min:6},{t:'മദ്ദ് ഗ്യാപ്പ്',min:6},
+ {t:'കൂട്ടിയെഴുത്ത്',min:4},{t:'വേർതിരിച്ചെഴുത്ത്',min:4},{t:'സമ്പൂർണ്ണ വാക്കുകൾ',min:8},{t:'മലയാളം → അറബി എഴുത്ത്',min:6}];
 const STREAK=4,QN=20; // ഓരോ ലെവലിലും 20 ചോദ്യം; അതിനിടയിൽ എവിടെയെങ്കിലും തുടർച്ചയായ 4 ശരി
 
 const GEN={};
@@ -259,153 +259,17 @@ GEN[9]=()=>{const [s,m]=M8S[rnd(M8S.length)],p=parseM(s),cl=p.it.map(x=>x.replac
   const groups=[];let c=0;cl.forEach((x,i)=>{c++;if(NOJ.includes(x[0])&&i<cl.length-1){groups.push(c);c=0}});if(c)groups.push(c);
   const tiles=cl.map(x=>`<span class="tile ar" style="font-size:36px">${x}</span>`).join('');
   return{key:'9'+s,prompt:`<div class="ml">ഈ അക്ഷരങ്ങൾ കൂട്ടിച്ചേർത്ത് എഴുതുക (${m})</div><div class="tiles" style="margin-top:8px">${tiles}</div><div class="ml" style="font-size:14px;color:var(--mut);margin-top:8px">ചേരുന്നവ ചേർത്തും, ا د ذ ر ز و എന്നിവയ്ക്ക് ശേഷം ഗ്യാപ്പ് ഇട്ടും, ഹറക്കത്ത് സഹിതം</div>`,kind:'draw',cells:[p.joined],cl,groups}};
-const HARAKAT_MARKS = /[\u064B-\u065F\u0670]/g;
-const SUKUN = '\u0652'; // സുക്കൂൻ (ْ)
-const DAMMA = '\u064F'; // ളംമ് (ُ)
+GEN[10]=()=>{const [s,m]=M8S[rnd(M8S.length)],p=parseM(s),cl=p.it.map(x=>x.replace('*',''));
+  const jn=i=>i<cl.length-1&&!NOJ.includes(cl[i][0]);
+  const ctx=cl.map((x,i)=>(i>0&&jn(i-1)?'‍':'')+x+(jn(i)?'‍':''));
+  return{key:'10'+s,prompt:`<div class="ml">ഈ വാക്കിലെ അക്ഷരങ്ങൾ ഓരോന്നും ഒറ്റയ്ക്ക് എഴുതുമ്പോഴുള്ള രൂപത്തിൽ (ചേർക്കാതെ), ഹറക്കത്ത് സഹിതം, ഓരോ കള്ളിയിലും എഴുതുക (${m})</div><div class="ar big" style="font-size:54px">${p.joined}</div>`,audio:p.joined,kind:'draw',cells:cl,ctx}};
+const W12=[['كتاب', 'കിതാബ്', 'പുസ്തകം', '📖'], ['باب', 'ബാബ്', 'വാതിൽ', '🚪'], ['نور', 'നൂർ', 'പ്രകാശം', '💡'], ['سلام', 'സലാം', 'സമാധാനം', '🤝'], ['قلم', 'ഖലം', 'പേന', '✒️'], ['قمر', 'ഖമർ', 'ചന്ദ്രൻ', '🌙'], ['شمس', 'ശംസ്', 'സൂര്യൻ', '☀️'], ['نجم', 'നജ്മ്', 'നക്ഷത്രം', '⭐'], ['بيت', 'ബൈത്ത്', 'വീട്', '🏠'], ['جمل', 'ജമൽ', 'ഒട്ടകം', '🐪'], ['فيل', 'ഫീൽ', 'ആന', '🐘'], ['سمك', 'സമക്', 'മീൻ', '🐟'], ['ورد', 'വർദ്', 'പൂവ്', '🌹'], ['دين', 'ദീൻ', 'മതം', '🕌'], ['مسجد', 'മസ്ജിദ്', 'പള്ളി', '🕌'], ['حج', 'ഹജ്ജ്', 'തീർത്ഥാടനം', '🕋'], ['نبي', 'നബി', 'പ്രവാചകൻ', '🌟'], ['قلب', 'ഖൽബ്', 'ഹൃദയം', '❤️'], ['بس', 'ബസ്', 'ബസ്', '🚌'], ['كار', 'കാർ', 'കാർ', '🚗']];
+GEN[12]=()=>{const [w,m,mean,e]=W12[rnd(W12.length)],cl=[...w];
+  const groups=[];let c=0;cl.forEach((x,i)=>{c++;if(NOJ.includes(x)&&i<cl.length-1){groups.push(c);c=0}});if(c)groups.push(c);
+  return{key:'12'+w,prompt:`<div class="ml">ഈ വാക്ക് അറബിയിൽ എഴുതുക</div><div style="font-size:50px;line-height:1.1;margin:6px 0">${e}</div><div class="ml big" style="font-size:44px">${m}</div><div class="ml" style="font-size:18px;color:var(--mut)">(${mean})</div><div class="ml" style="font-size:14px;color:var(--mut);margin-top:6px">ഹറക്കത്ത് വേണ്ട. ചേരുന്നവ ചേർത്ത് എഴുതുക, ا د ذ ر ز و എന്നിവയ്ക്ക് ശേഷം ഗ്യാപ്പ് ഇടുക</div>`,kind:'draw',cells:[w],cl,groups}};
+GEN[11]=()=>{const [w,m]=W11[rnd(W11.length)];
+  return{key:'11'+w,prompt:`<div class="ml">ശരിയായ വാക്ക് തിരഞ്ഞെടുക്കുക</div><div class="ml big" style="font-size:44px">${m}</div>`,audio:w,kind:'choice',opts:wordOpts(w),ans:w}};
 
-function parseArabicClusters(text) {
-  const clean = (text || '').replace(/\s+/g, '').replace(/\u200D/g, '');
-  const clusters = [];
-  for (const ch of clean) {
-    if (HARAKAT_MARKS.test(ch)) {
-      if (clusters.length > 0) {
-        clusters[clusters.length - 1].marks.push(ch);
-      } else {
-        clusters.push({ base: '', marks: [ch] });
-      }
-    } else {
-      clusters.push({ base: ch, marks: [] });
-    }
-  }
-  return clusters;
-}
-
-// ഹറക്കത്ത് കർശനമായി പരിശോധിക്കുന്ന ഫംഗ്ഷൻ (ഹറക്കത്ത് ഇല്ലെങ്കിൽ Wrong)
-function validateStrictHarakat(userInput, expectedWord, options = {}) {
-  const { requireFinalMark = null } = options; // 'sukun' അല്ലെങ്കിൽ 'damma'
-  const userClusters = parseArabicClusters(userInput);
-  const expectedClusters = parseArabicClusters(expectedWord);
-
-  // ഹറക്കത്ത് ഒട്ടും ഇല്ലെങ്കിൽ തെറ്റ്
-  const hasAnyHarakat = userClusters.some(c => c.marks.length > 0);
-  if (!hasAnyHarakat) {
-    return { ok: false, msg: 'ഹറക്കത്ത് നിർബന്ധമാണ്! ഹറക്കത്തില്ലാതെ ശരിയാകില്ല.' };
-  }
-
-  if (userClusters.length !== expectedClusters.length) {
-    return { ok: false, msg: 'അക്ഷരങ്ങളുടെ എണ്ണം ശരിയല്ല.' };
-  }
-
-  for (let i = 0; i < expectedClusters.length; i++) {
-    const exp = expectedClusters[i];
-    const usr = userClusters[i];
-    const isLast = i === expectedClusters.length - 1;
-
-    if (usr.base !== exp.base) {
-      return { ok: false, msg: ${i + 1}-ാമത്തെ അക്ഷരം ശരിയല്ല. };
-    }
-
-    const expMarks = [...exp.marks].sort().join('');
-    const usrMarks = [...usr.marks].sort().join('');
-
-    if (isLast && requireFinalMark === 'sukun' && !usr.marks.includes(SUKUN)) {
-      return { ok: false, msg: 'അവസാന അക്ഷരത്തിൽ സുക്കൂൻ (ْ) തന്നെ വേണം.' };
-    }
-    if (isLast && requireFinalMark === 'damma' && !usr.marks.includes(DAMMA)) {
-      return { ok: false, msg: 'അവസാന അക്ഷരത്തിൽ ളംമ് (ُ) തന്നെ വേണം.' };
-    }
-
-    if (usrMarks !== expMarks) {
-      return { ok: false, msg: ${usr.base} എന്ന അക്ഷരത്തിലെ ഹറക്കത്ത് ശരിയല്ല. };
-    }
-  }
-
-  return { ok: true, msg: 'കൃത്യം!' };
-}
-
-GEN[10] = () => {
-  const [s, m] = M8S[rnd(M8S.length)], p = parseM(s), cl = p.it.map(x => x.replace('*', ''));
-  const jn = i => i < cl.length - 1 && !NOJ.includes(cl[i][0]);
-  const ctx = cl.map((x, i) => (i > 0 && jn(i - 1) ? '‍' : '') + x + (jn(i) ? '‍' : ''));
-  return {
-    key: '10' + s,
-    prompt: <div class="ml">ഈ വാക്കിലെ അക്ഷരങ്ങൾ ഓരോന്നും ഒറ്റയ്ക്ക് എഴുതുമ്പോഴുള്ള രൂപത്തിൽ (ചേർക്കാതെ), ഹറക്കത്ത് സഹിതം, ഓരോ കള്ളിയിലും എഴുതുക (${m})</div><div class="ar big" style="font-size:54px">${p.joined}</div>,
-    audio: p.joined,
-    kind: 'draw',
-    cells: cl,
-    ctx,
-    requireHarakat: true
-  };
-};
-
-// ഓരോ വാക്കിനും കൃത്യമായ ഹറക്കത്തുകൾ ചേർത്തിരിക്കുന്നു (ഉദാഹരണത്തിന് 'وَرْدْ' -> അവസാനം സുക്കൂൻ)
-const W12 = [
-  ['كِتَابٌ', 'കിതാബ്', 'പുസ്തകം', '📖', null],
-  ['بَابٌ', 'ബാബ്', 'വാതിൽ', '🚪', null],
-  ['نُورٌ', 'നൂർ', 'പ്രകാശം', '💡', null],
-  ['سَلَامٌ', 'സലാം', 'സമാധാനം', '🤝', null],
-  ['قَلَمٌ', 'ഖലം', 'പേന', '✒️', null],
-  ['قَمَرٌ', 'ഖമർ', 'ചന്ദ്രൻ', '🌙', null],
-  ['شَمْسٌ', 'ശംസ്', 'സൂര്യൻ', '☀️', null],
-  ['نَجْمٌ', 'നജ്മ്', 'നക്ഷത്രം', '⭐', null],
-  ['بَيْتٌ', 'ബൈത്ത്', 'വീട്', '🏠', null],
-  ['جَمَلٌ', 'ജമൽ', 'ഒട്ടകം', '🐪', null],
-  ['فِيلٌ', 'ഫീൽ', 'ആന', '🐘', null],
-  ['سَمَكٌ', 'സമക്', 'മീൻ', '🐟', null],
-  ['وَرْدْ', 'വർദ്', 'പൂവ്', '🌹', 'sukun'], // അവസാനം സുക്കൂൻ (ْ) നിർബന്ധം; 'വർദു' ആണെങ്കിൽ 'وَرْدُ' + 'damma'
-  ['دِينٌ', 'ദീൻ', 'മതം', '🕌', null],
-  ['مَسْجِدٌ', 'മസ്ജിദ്', 'പള്ളി', '🕌', null],
-  ['حَجٌّ', 'ഹജ്ജ്', 'തീർത്ഥാടനം', '🕋', null],
-  ['نَبِيٌّ', 'നബി', 'പ്രവാചകൻ', '🌟', null],
-  ['قَلْبٌ', 'ഖൽബ്', 'ഹൃദയം', '❤️', null],
-  ['بَصٌ', 'ബസ്', 'ബസ്', '🚌', null],
-  ['كَارٌ', 'കാർ', 'കാർ', '🚗', null]
-];
-
-GEN[12] = () => {
-  const [w, m, mean, e, finalMark] = W12[rnd(W12.length)];
-  const baseLetters = [...parseArabicClusters(w).map(c => c.base)];
-  const groups = [];
-  let c = 0;
-  baseLetters.forEach((x, i) => {
-    c++;
-    if (NOJ.includes(x) && i < baseLetters.length - 1) {
-      groups.push(c);
-      c = 0;
-    }
-  });
-  if (c) groups.push(c);
-
-  const finalRuleText =
-    finalMark === 'sukun'
-      ? 'അവസാന അക്ഷരത്തിൽ സുക്കൂൻ (ْ) തന്നെ ഉണ്ടായിരിക്കണം.'
-      : finalMark === 'damma'
-      ? 'അവസാന അക്ഷരത്തിൽ ളംമ് (ُ) തന്നെ ഉണ്ടായിരിക്കണം.'
-      : '';
-
-  return {
-    key: '12' + w,
-    prompt: <div class="ml">ഈ വാക്ക് അറബിയിൽ എഴുതുക</div><div style="font-size:50px;line-height:1.1;margin:6px 0">${e}</div><div class="ml big" style="font-size:44px">${m}</div><div class="ml" style="font-size:18px;color:var(--mut)">(${mean})</div><div class="ml" style="font-size:14px;color:var(--mut);margin-top:6px">കൃത്യമായ ഹറക്കത്ത് നിർബന്ധമാണ്. ${finalRuleText} ചേരുന്നവ ചേർത്ത് എഴുതുക, ا د ذ ر ز و എന്നിവയ്ക്ക് ശേഷം ഗ്യാപ്പ് ഇടുക</div>,
-    kind: 'draw',
-    cells: [w],
-    cl: baseLetters,
-    groups,
-    requireHarakat: true,
-    finalMark
-  };
-};
-
-GEN[11] = () => {
-  const [w, m] = W11[rnd(W11.length)];
-  return {
-    key: '11' + w,
-    prompt: <div class="ml">ശരിയായ വാക്ക് തിരഞ്ഞെടുക്കുക</div><div class="ml big" style="font-size:44px">${m}</div>,
-    audio: w,
-    kind: 'choice',
-    opts: wordOpts(w),
-    ans: w
-  };
-};
 /* ================= AUDIO ================= */
 let voice=null,spk=0,warned=false;
 function loadV(){if(!('speechSynthesis' in window))return;voice=speechSynthesis.getVoices().find(v=>/^ar/i.test(v.lang))||null}
